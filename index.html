@@ -4,19 +4,19 @@
 
   /* Custom Properties for Modern Look */
   :root {
-    --bg-color: #f7f7f7;
+    --bg-color: #fdfdfd; /* White background from original CSS */
     --node-bg: #ffffff;
-    --node-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 5px 15px rgba(0, 0, 0, 0.05);
-    --node-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.08);
+    --node-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); /* Original shadow */
+    --node-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); /* Original hover shadow */
     --border-color: #e0e0e0;
-    --text-color: #333333;
+    --text-color: #222; /* Original text color */
     --subtle-text: #888888;
-    --accent-color: #4A90E2; /* Notion blue */
-    --danger-color: #E05252;
+    --accent-color: #4A90E2;
+    --danger-color: #e74c3c; /* Original danger color */
     --control-bg: rgba(255, 255, 255, 0.9);
-    --control-button-bg: #f2f2f2;
-    --control-button-hover-bg: #e5e5e5;
-    --control-button-active-bg: #d4d4d4;
+    --control-button-bg: #fff;
+    --control-button-hover-bg: #f5f5f5;
+    --control-button-active-bg: #e0e0e0;
   }
 
   /* Base Styles */
@@ -53,31 +53,29 @@
     z-index: 0;
   }
   .conn {
-    /* Kept original style for line appearance */
     stroke: #ccc;
     stroke-width: 2;
     fill: none;
   }
 
-  /* Node Styles */
+  /* Node Styles (Based on original CSS but cleaned up) */
   .node {
     position: absolute;
-    background: var(--node-bg); /* Use modern variable */
-    border-radius: 8px; /* Softer corners */
+    background: var(--node-bg);
+    border-radius: 10px; /* Original radius */
     padding: 12px 18px;
     min-width: 80px;
-    box-shadow: var(--node-shadow); /* Use modern variable */
-    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    box-shadow: var(--node-shadow);
+    transition: transform .15s, box-shadow .15s;
     z-index: 10;
-    border: 1px solid var(--border-color); /* Added subtle border */
   }
   .node:hover {
-    transform: scale(1.01); /* Subtle hover scale */
-    box-shadow: var(--node-hover-shadow); /* Use modern variable */
+    transform: scale(1.03); /* Original hover scale */
+    box-shadow: var(--node-hover-shadow);
     z-index: 20;
   }
   .node.drag {
-    opacity: 0.85; /* Slight change from .75 */
+    opacity: .75; /* Original opacity */
     z-index: 1000;
   }
   .txt {
@@ -85,15 +83,15 @@
     border: none;
     background: transparent;
     font-size: 16px;
-    font-weight: 500; /* Slightly less bold */
-    color: var(--text-color); /* Use modern variable */
+    font-weight: 600; /* Original weight */
+    color: var(--text-color);
     width: 100%;
     text-align: center;
     cursor: text;
-    white-space: pre-wrap; /* Allow wrapping */
+    white-space: nowrap; /* Original setting */
   }
   .bdy {
-    cursor: grab; /* Use grab for modern feel */
+    cursor: move; /* Original cursor */
     padding: 12px 18px;
     margin: -12px -18px;
     position: relative;
@@ -101,157 +99,131 @@
   }
   .rh {
     position: absolute;
-    bottom: 0; /* Changed from top:0 to bottom:0 for a different handle feel */
-    right: 0; /* Changed from -8px to 0 */
-    width: 20px; /* Wider/taller hit area */
-    height: 20px;
-    cursor: nwse-resize; /* Diagonal resize */
+    top: 0;
+    right: -8px; /* Original position */
+    width: 16px;
+    height: 100%;
+    cursor: ew-resize; /* Original cursor */
     z-index: 40;
-    /* Visual resize handle in the corner */
-    background: radial-gradient(circle at top left, transparent 50%, #ccc 50%);
-    border-bottom-right-radius: 8px;
-    opacity: 0.7;
-    transition: opacity 0.15s ease-out;
-  }
-  .node:hover .rh {
-    opacity: 1;
+    background: transparent; /* Make it invisible but functional */
   }
 
-  /* Actions (Add/Delete) */
+  /* Actions (Add/Delete) - Original Styling */
   .acts {
     position: absolute;
-    top: -36px; /* Moved up for better visibility */
+    top: -28px;
     left: 50%;
     transform: translateX(-50%);
     display: none;
-    gap: 4px; /* Added gap */
     z-index: 50;
   }
   .node:hover .acts {
     display: flex;
   }
-  .acts button {
-    width: 30px; /* Slightly smaller buttons */
-    height: 30px;
-    border-radius: 6px; /* Square with soft corners */
+  .add {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     border: none;
     background: var(--control-button-bg);
-    color: var(--subtle-text);
-    font-size: 18px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    color: #555;
+    font-size: 22px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
     cursor: pointer;
+  }
+  .del {
+    position: absolute;
+    top: 6px;
+    right: -12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--control-button-bg);
+    color: var(--danger-color);
+    font-size: 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    cursor: pointer;
+    display: none;
+    z-index: 50;
+  }
+  .node:hover .del {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.15s ease-in-out, transform 0.1s ease-out;
-  }
-  .acts button:hover {
-     background: var(--control-button-hover-bg);
-     transform: translateY(-1px);
-  }
-  .add {
-    color: var(--accent-color); /* Blue + */
-    font-weight: 700;
-  }
-  .del {
-    color: var(--danger-color); /* Red x */
-    font-weight: 700;
-  }
-  /* Original delete button positioning (kept for functionality) */
-  .del {
-    position: static; /* Resetting the original position to make it part of acts */
-    top: auto;
-    right: auto;
-    margin: 0;
   }
 
   /* Control Panel */
   #ctrl {
     position: fixed;
-    top: 16px; /* Moved slightly down */
+    top: 12px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 8px; /* Slightly larger gap */
-    background: var(--control-bg); /* Use modern variable */
-    padding: 8px 12px; /* Increased padding */
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 6px 10px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
     z-index: 50;
-    opacity: 0.9; /* Subtle opacity change */
-    transition: opacity 0.2s ease-in-out;
-  }
-  #ctrl:hover {
-    opacity: 1;
-  }
-  #ctrl button {
-    padding: 8px 10px; /* Adjusted padding */
-    border-radius: 6px; /* Softer radius */
-    border: none;
-    background: var(--control-button-bg);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Lighter shadow */
-    cursor: pointer;
-    font-size: 16px; /* Adjusted size */
-    transition: background-color 0.15s ease-in-out, transform 0.1s ease-out;
-  }
-  #ctrl button:hover {
-    background: var(--control-button-hover-bg);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  }
-  #ctrl button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    opacity: 1; /* Made fully visible by default as per screenshot */
+    transition: none; /* Removing hover fade */
   }
   #ctrl input {
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    width: 160px; /* Slightly wider */
-    font-size: 15px; /* Adjusted size */
-    background: var(--node-bg);
-    color: var(--text-color);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 140px;
+  }
+  #ctrl button {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    cursor: pointer;
+    font-size: 18px;
+  }
+  #ctrl button:disabled {
+    opacity: 0.4;
   }
 
-  /* Gallery */
+  /* Gallery Styling (Updated to match screenshot look) */
   #gal {
     position: fixed;
-    right: 16px; /* Adjusted position */
+    right: 12px;
     top: 60px;
-    width: 300px; /* Slightly wider */
+    width: 280px;
     max-height: 85vh;
-    overflow-y: auto;
-    background: var(--control-bg);
-    padding: 12px; /* Adjusted padding */
+    overflow: auto;
+    background: rgba(255,255,255,1); /* Fully opaque */
+    padding: 10px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
     display: none;
-    border: 1px solid var(--border-color);
+    border: 1px solid #eee;
+    font-family: 'Inter', sans-serif;
   }
   #gal h3 {
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     font-size: 16px;
-    font-weight: 600;
-    color: var(--text-color);
+    color: #222;
   }
   .gi {
-    padding: 8px 12px; /* Adjusted padding */
-    margin-bottom: 8px;
-    background: #fcfcfc;
+    padding: 8px 10px; /* Adjusted padding */
+    margin-bottom: 6px;
+    background: #fff; /* White background for list item */
     border-radius: 6px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: 1px solid #eee;
-    transition: background-color 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
   }
   .gi:hover {
-    background: #e9e9e9;
+    background: #f7f7f7;
   }
   .gt {
     flex-grow: 1;
@@ -267,27 +239,17 @@
     background: none;
     border: none;
     color: var(--danger-color);
-    font-size: 18px; /* Adjusted size */
+    font-size: 18px;
     cursor: pointer;
-    margin-left: 8px;
-    padding: 4px;
-    transition: color 0.15s;
-  }
-  .dgb:hover {
-    color: #c0392b;
+    margin-left: 4px;
   }
   .glk {
     background: none;
     border: none;
-    color: var(--subtle-text);
+    color: #555;
     font-size: 18px;
     cursor: pointer;
-    margin-right: 8px;
-    padding: 4px;
-    transition: color 0.15s;
-  }
-  .glk:hover {
-    color: #555;
+    margin-right: 4px;
   }
 
   /* Modals */
@@ -297,73 +259,67 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Slightly lighter overlay */
+    background: rgba(0,0,0,.6);
     z-index: 10000;
     display: none;
     align-items: center;
     justify-content: center;
   }
   .m-b {
-    background: var(--node-bg);
-    padding: 24px; /* Increased padding */
+    background: #fff;
+    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+    box-shadow: 0 5px 15px rgba(0,0,0,.3);
     width: 90%;
-    max-width: 400px; /* Slightly wider modal */
+    max-width: 350px;
     text-align: center;
     font-family: 'Inter', sans-serif;
   }
   .m-b h4 {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 18px;
-    color: var(--text-color);
+    color: #333
   }
   #u-o #u-d {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0 20px 0; /* Adjusted margin */
-    border: 1px solid var(--border-color);
-    background: #fdfdfd;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
     font-size: 14px;
     word-break: break-all;
     text-align: left;
     border-radius: 6px;
-    font-family: monospace;
   }
   #p-o #p-i {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     font-size: 16px;
     box-sizing: border-box;
   }
   .m-b-g button {
-    padding: 10px 20px; /* Larger buttons */
+    padding: 8px 15px;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     margin: 5px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
-    transition: opacity 0.15s, transform 0.1s;
-  }
-  .m-b-g button:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
   }
   .b-p {
-    background: #2ecc71; /* Green check */
-    color: white;
+    background: #4CAF50;
+    color: white
   }
   .b-s {
-    background: #e74c3c; /* Red X */
-    color: white;
+    background: #f44336;
+    color: white
   }
   .b-i {
-    background: #3498db; /* Blue info/ok */
-    color: white;
+    background: #2196F3;
+    color: white
   }
 </style>
 
@@ -372,6 +328,7 @@
 <div id="gal"><h3>Gallery</h3><div id="gl"></div></div>
 <div id="u-o" class="m-o"><div class="m-b"><h4>Copy this URL to embed this specific map in Notion:</h4><div id="u-d"></div><button onclick="document.getElementById('u-o').style.display='none'" class="m-b-g b-s">Close</button></div></div>
 <div id="p-o" class="m-o"><div class="m-b"><h4 id="pm"></h4><input type="text" id="p-i" placeholder="Enter title" style="display:none;"><div class="m-b-g"><button id="pc" class="b-p" style="display:none;">Confirm</button><button id="pnc" class="b-s" style="display:none;">Cancel</button><button id="pao" class="b-i" style="display:none;">OK</button></div></div></div>
+
 <script>
   ((B = 'https://apption.co/embeds/263c4704', c = document.getElementById('c'), s = document.getElementById('s'), g = document.getElementById('gal'), uO = document.getElementById('u-o'), uD = document.getElementById('u-d'), pO = document.getElementById('p-o'), pM = document.getElementById('pm'), pI = document.getElementById('p-i'), pC = document.getElementById('pc'), pNC = document.getElementById('pnc'), pAO = document.getElementById('pao'), k = 'mgd') => {
     let ns = [],
