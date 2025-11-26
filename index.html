@@ -725,8 +725,17 @@ document.getElementById('new-btn').onclick = async ()=>{
     const ans = await showConfirm("Clear current map and start a new one?"); // CHANGED: Now uses showConfirm
     if(!ans) return;
   }
-  clearCanvas(); nodes=[]; history=[]; historyIndex=-1; currentMapIndex=null; mapTitleInput.value='Untitled';
+  clearCanvas(); 
+  nodes=[]; 
+  history=[]; 
+  historyIndex=-1; 
+  currentMapIndex=null; 
+  mapTitleInput.value='Untitled';
   originalTitle='';
+  
+  // *** FIX: Create the initial node after clearing the canvas ***
+  createNode('Central Idea',canvas.offsetWidth/2-60,canvas.offsetHeight/2-30,null);
+  
   captureState();
 };
 document.getElementById('gallery-btn').onclick = ()=>{
