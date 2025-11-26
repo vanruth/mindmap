@@ -58,7 +58,7 @@
     .item-action-btn.delete:hover {color:var(--danger);}
     .save-group {display:flex; position:relative;}
     #save-main-btn {border-top-right-radius:0; border-bottom-right-radius:0;}
-    #save-dropdown-btn {width:32px; height:32px; border-left:none; border-top-left-radius:0; border-bottom-left-radius:0; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+    #save-dropdown-btn {width:28px; height:32px; border-left:none; border-top-left-radius:0; border-bottom-left-radius:0; display:flex; align-items:center; justify-content:center; cursor:pointer;}
     #save-dropdown-menu {position:absolute; top:38px; right:0; background:var(--card); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow-large); display:none; flex-direction:column; width:140px; z-index:200;}
     .save-dropdown-item {padding:8px 12px; cursor:pointer; font-size:13px; color:var(--text);}
     .save-dropdown-item:hover {background:var(--hover-bg);}
@@ -616,6 +616,16 @@ function renderGallery() {
     const info = document.createElement('div');
     info.className = 'item-info';
     info.innerHTML = `<div class='item-title'>${sanitizeText(map.title)}</div><div class='item-date'>${new Date(map.timestamp).toLocaleString()}</div>`;
+    const linkBtn = document.createElement('button');
+    linkBtn.className = 'item-action-btn link-btn';
+    linkBtn.setAttribute('aria-label','Get Share Link');
+    linkBtn.innerHTML = "🔗"; // Link emoji
+    linkBtn.addEventListener('click',async (e)=>{
+      e.stopPropagation();
+      const shareUrl = `${APP_BASE_URL}?mapId=${idx}`;
+      await showLink("Shareable Link:", shareUrl);
+    });
+    item.appendChild(linkBtn);
     item.appendChild(info);
     const delBtn = document.createElement('button');
     delBtn.className = 'item-action-btn delete';
