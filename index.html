@@ -1,1 +1,882 @@
-<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#fdfdfd;overflow:hidden;height:100vh}#c{width:100%;height:100vh;position:relative;cursor:grab}#c.grabbing{cursor:grabbing}svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}.conn{stroke:#ccc;stroke-width:2;fill:none}.node{position:absolute;background:#fff;border-radius:10px;padding:12px 18px;min-width:80px;box-shadow:0 3px 10px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s;z-index:10}.node:hover{transform:scale(1.03);box-shadow:0 6px 16px rgba(0,0,0,.12);z-index:20}.node.drag{opacity:.75;z-index:1000}.txt{outline:none;border:none;background:transparent;font-size:16px;font-weight:600;color:#222;width:100%;text-align:center;cursor:text;white-space:nowrap}.bdy{cursor:move;padding:12px 18px;margin:-12px -18px;position:relative;min-height:40px}.rh{position:absolute;top:0;right:-8px;width:16px;height:100%;cursor:ew-resize;z-index:40}.acts{position:absolute;top:-28px;left:50%;transform:translateX(-50%);display:none;z-index:50}.node:hover .acts{display:flex}.add{width:32px;height:32px;border-radius:50%;border:none;background:#fff;color:#555;font-size:22px;box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:pointer}.del{position:absolute;top:6px;right:-12px;width:32px;height:32px;border-radius:50%;border:none;background:#fff;color:#e74c3c;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:pointer;display:none;z-index:50}.node:hover .del{display:flex;align-items:center;justify-content:center}#ctrl{position:fixed;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(255,255,255,0.8);padding:6px 10px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12);z-index:50;opacity:0.1}#ctrl:hover{opacity:1}#ctrl button{padding:6px 10px;border-radius:8px;border:none;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;font-size:18px}#ctrl button:disabled{opacity:0.4}#ctrl input{padding:6px 10px;border-radius:8px;border:1px solid #ccc;width:140px}#gal{position:fixed;right:12px;top:60px;width:280px;max-height:85vh;overflow:auto;background:rgba(255,255,255,.95);padding:10px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.12);display:none}#gal h3{text-align:center;margin-bottom:10px;font-size:16px}.gi{padding:6px 10px;margin-bottom:6px;background:#f7f7f7;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.gi:hover{background:#e0e0e0}.gt{flex-grow:1;font-size:14px}.gd{font-size:11px;color:#888;margin-top:2px}.dgb{background:none;border:none;color:#e74c3c;font-size:16px;cursor:pointer;margin-left:4px}.glk{background:none;border:none;color:#555;font-size:18px;cursor:pointer;margin-right:4px}.m-o{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:10000;display:none;align-items:center;justify-content:center}.m-b{background:#fff;padding:20px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.3);width:90%;max-width:350px;text-align:center;font-family:sans-serif}.m-b h4{margin-bottom:15px;font-size:18px;color:#333}#u-o #u-d{width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;background:#f7f7f7;font-size:14px;word-break:break-all;text-align:left}#p-o #p-i{width:100%;padding:10px;margin-top:10px;border:1px solid #ccc;border-radius:5px;font-size:16px;box-sizing:border-box}.m-b-g button{padding:8px 15px;border:none;border-radius:5px;cursor:pointer;margin:5px;font-size:16px}.b-p{background:#4CAF50;color:white}.b-s{background:#f44336;color:white}.b-i{background:#2196F3;color:white}</style><div id="c"><svg id="s"></svg></div><div id="ctrl"><input id="t" type="text" placeholder="Title"/><button id="u" title="Undo">↶</button><button id="r" title="Redo">↷</button><button id="sv" title="Save">💾</button><button id="sa" title="Save As">S A</button><button id="n" title="New">🔄</button><button id="tg" title="Gallery">📂</button></div><div id="gal"><h3>Gallery</h3><div id="gl"></div></div><div id="u-o" class="m-o"><div class="m-b"><h4>Copy this URL to embed this specific map in Notion:</h4><div id="u-d"></div><button onclick="document.getElementById('u-o').style.display='none'" class="m-b-g b-s">Close</button></div></div><div id="p-o" class="m-o"><div class="m-b"><h4 id="pm"></h4><input type="text" id="p-i" placeholder="Enter title" style="display:none;"><div class="m-b-g"><button id="pc" class="b-p" style="display:none;">Confirm</button><button id="pnc" class="b-s" style="display:none;">Cancel</button><button id="pao" class="b-i" style="display:none;">OK</button></div></div></div><script>((B='https://apption.co/embeds/263c4704',c=document.getElementById('c'),s=document.getElementById('s'),g=document.getElementById('gal'),uO=document.getElementById('u-o'),uD=document.getElementById('u-d'),pO=document.getElementById('p-o'),pM=document.getElementById('pm'),pI=document.getElementById('p-i'),pC=document.getElementById('pc'),pNC=document.getElementById('pnc'),pAO=document.getElementById('pao'),k='mgd')=>{let ns=[],dr=null,ox=0,oy=0,pn=false,px=0,py=0,h=[],hi=-1,ci=null,ot='',rz=null,rs={};function ca(m){return new Promise(r=>{pM.textContent=m;pI.style.display='none';pC.style.display='none';pNC.style.display='none';pAO.style.display='inline-block';const handler=()=>{pAO.removeEventListener('click',handler);pO.style.display='none';r()};pAO.addEventListener('click',handler);pO.style.display='flex'})}function cp(m,d=''){return new Promise(r=>{pM.textContent=m;pI.value=d;pI.style.display='block';pC.style.display='inline-block';pNC.style.display='inline-block';pAO.style.display='none';const hC=()=>{remH();pO.style.display='none';r(pI.value)};const hCN=()=>{remH();pO.style.display='none';r(null)};const remH=()=>{pC.removeEventListener('click',hC);pNC.removeEventListener('click',hCN)};pC.addEventListener('click',hC);pNC.addEventListener('click',hCN);pO.style.display='flex';pI.focus();pI.select()})}function cap(){const st={nodes:ns.map(n=>({id:n.id,p:n.p,t:n.el.querySelector('.txt').textContent,l:parseFloat(n.el.style.left),tp:parseFloat(n.el.style.top),w:n.el.offsetWidth,h:n.el.offsetHeight})),title:document.getElementById('t').value};if(hi<h.length-1)h=h.slice(0,hi+1);h.push(JSON.parse(JSON.stringify(st)));if(h.length>50)h.shift();else hi++;document.getElementById('u').disabled=hi<=0;document.getElementById('r').disabled=hi>=h.length-1}function rst(st){clr();st.nodes.forEach(n=>mkn(n.t,n.l,n.tp,n.p,n.id,n.w,n.h,true));document.getElementById('t').value=st.title;document.getElementById('u').disabled=hi<=0;document.getElementById('r').disabled=hi>=h.length-1}function mkn(tx,x,y,p=null,id=null,w=null,ht=null,sk=false){const d=document.createElement('div');d.className='node';d.style.left=x+'px';d.style.top=y+'px';if(w)d.style.width=w+'px';if(ht)d.style.height=ht+'px';id=id||'n'+Date.now()+Math.random().toString(36).substr(2,5);d.dataset.id=id;d.dataset.p=p||'';const b=document.createElement('div');b.className='bdy';const a=document.createElement('div');a.className='acts';const pl=document.createElement('button');pl.className='add';pl.textContent='+';pl.onclick=e=>{e.stopPropagation();adc(id)};a.appendChild(pl);b.appendChild(a);if(p!==null){const dl=document.createElement('button');dl.className='del';dl.textContent='×';dl.onclick=e=>{e.stopPropagation();dln(id)};b.appendChild(dl)}const td=document.createElement('div');td.className='txt';td.contentEditable=true;td.textContent=tx;if(w&&ht){td.style.whiteSpace='normal';td.dataset.mr='true'}let tm;td.addEventListener('input',()=>{if(td.dataset.mr==='true')return;const mn=80,mx=600,tw=td.scrollWidth+36;d.style.width=Math.max(mn,Math.min(mx,tw))+'px';drw();clearTimeout(tm);tm=setTimeout(()=>cap(),500)});b.appendChild(td);d.appendChild(b);const hd=document.createElement('div');hd.className='rh';hd.addEventListener('mousedown',e=>{e.stopPropagation();srz(e,d)});d.appendChild(hd);c.appendChild(d);ns.push({id,el:d,p});b.addEventListener('mousedown',e=>{if(e.target===b||e.target===td.parentElement)sdg(e,d)});drw();if(!sk)cap();return id}function srz(e,el){rz=el;const td=el.querySelector('.txt');td.style.whiteSpace='normal';td.dataset.mr='true';rs={x:e.clientX,y:e.clientY,w:el.offsetWidth,h:el.offsetHeight};e.preventDefault();document.addEventListener('mousemove',drz);document.addEventListener('mouseup',stz)}function drz(e){if(!rz)return;const dx=e.clientX-rs.x,dy=e.clientY-rs.y;rz.style.width=Math.max(80,rs.w+dx)+'px';rz.style.height=Math.max(40,rs.h+dy)+'px';drw()}function stz(){if(rz)cap();rz=null;document.removeEventListener('mousemove',drz);document.removeEventListener('mouseup',stz)}function adc(pid){const p=ns.find(n=>n.id===pid);if(!p)return;const rc=p.el.getBoundingClientRect();const ct=ns.filter(n=>n.p===pid).length,an=(Math.PI*2*ct/5)+(Math.random()*.4-.2),d=150;const x=rc.left+rc.width/2+Math.cos(an)*d-60,y=rc.top+rc.height/2+Math.sin(an)*d-30;mkn('New Idea',x,y,pid)}function dln(id){const i=ns.findIndex(n=>n.id===id);if(i===-1)return;ns.filter(n=>n.p===id).forEach(kd=>dln(kd.id));ns[i].el.remove();ns.splice(i,1);drw();cap()}function sdg(e,el){dr=el;dr.classList.add('drag');const rc=dr.getBoundingClientRect();ox=e.clientX-rc.left;oy=e.clientY-rc.top;e.preventDefault();document.addEventListener('mousemove',dg);document.addEventListener('mouseup',stg)}function dg(e){if(!dr)return;dr.style.left=(e.clientX-ox)+'px';dr.style.top=(e.clientY-oy)+'px';drw()}function stg(){if(dr){dr.classList.remove('drag');cap()}dr=null;document.removeEventListener('mousemove',dg);document.removeEventListener('mouseup',stg)}function drw(){s.innerHTML='';ns.forEach(n=>{if(!n.p)return;const p=ns.find(x=>x.id===n.p);if(!p)return;const pr=p.el.getBoundingClientRect(),nr=n.el.getBoundingClientRect();const x1=pr.left+pr.width/2,y1=pr.top+pr.height/2,x2=nr.left+nr.width/2,y2=nr.top+nr.height/2,mx=(x1+x2)/2,my=(y1+y2)/2;const pt=document.createElementNS('http://www.w3.org/2000/svg','path');pt.setAttribute('d',`M${x1},${y1} Q${mx},${y1} ${mx},${my} T${x2},${y2}`);pt.setAttribute('class','conn');s.appendChild(pt)})}let ps;c.addEventListener('mousedown',e=>{if(e.target===c||e.target===s){pn=true;px=e.clientX;py=e.clientY;c.classList.add('grabbing');ps=ns.map(n=>({id:n.id,l:parseFloat(n.el.style.left),tp:parseFloat(n.el.style.top)}))}});document.addEventListener('mousemove',e=>{if(!pn)return;const dx=e.clientX-px,dy=e.clientY-py;ns.forEach(n=>{n.el.style.left=(parseFloat(n.el.style.left)+dx)+'px';n.el.style.top=(parseFloat(n.el.style.top)+dy)+'px'});px=e.clientX;py=e.clientY;drw()});document.addEventListener('mouseup',()=>{if(pn){const mv=ps.some((o,i)=>{const n=ns.find(nd=>nd.id===o.id);return n&&(Math.abs(parseFloat(n.el.style.left)-o.l)>5||Math.abs(parseFloat(n.el.style.top)-o.tp)>5)});if(mv)cap()}pn=false;c.classList.remove('grabbing')});c.addEventListener('dblclick',e=>{if(e.target===c||e.target===s)mkn('New Idea',e.clientX-60,e.clientY-30)});async function sva(tt){const mp={title:tt,nodes:ns.map(n=>({id:n.id,p:n.p,t:n.el.querySelector('.txt').textContent,l:parseFloat(n.el.style.left),tp:parseFloat(n.el.style.top),w:n.el.offsetWidth,h:n.el.offsetHeight})),ts:Date.now()};const gv=JSON.parse(localStorage.getItem(k)||'[]');gv.push(mp);ci=gv.length-1;ot=tt;localStorage.setItem(k,JSON.stringify(gv));document.getElementById('t').value=tt;rgl();await ca(`Map saved as: ${tt}`)}async function sv(){const tt=document.getElementById('t').value.trim();if(ci!==null&&ot!==''){const mp={title:tt||ot,nodes:ns.map(n=>({id:n.id,p:n.p,t:n.el.querySelector('.txt').textContent,l:parseFloat(n.el.style.left),tp:parseFloat(n.el.style.top),w:n.el.offsetWidth,h:n.el.offsetHeight})),ts:Date.now()};const gv=JSON.parse(localStorage.getItem(k)||'[]');gv[ci]=mp;ot=tt||ot;localStorage.setItem(k,JSON.stringify(gv));document.getElementById('t').value=ot;rgl();await ca(`Map changes saved to: ${ot}`)}else{await sa()}}async function sa(){let nT=await cp("Enter a title for the new map:",document.getElementById('t').value.trim()||'Untitled Map');if(nT===null){await ca("Save As cancelled.");return}nT=nT.trim();if(nT===''){await ca("A title is required. Save As cancelled.");return}await sva(nT)}function ld(ix){const gv=JSON.parse(localStorage.getItem(k)||'[]');if(!gv[ix])return;clr();gv[ix].nodes.forEach(n=>mkn(n.t,n.l,n.tp,n.p,n.id,n.w,n.h,true));document.getElementById('t').value=gv[ix].title;ot=gv[ix].title;ci=ix;cap()}function dlg(ix){const gv=JSON.parse(localStorage.getItem(k)||'[]');gv.splice(ix,1);localStorage.setItem(k,JSON.stringify(gv));if(ci===ix){ci=null}else if(ci>ix){ci--}rgl()}function clr(){ns.forEach(n=>n.el.remove());ns=[];drw()}function getLink(ix){const eU=B+'?mapId='+ix;uD.textContent=eU;uO.style.display='flex'}function rgl(){const ls=document.getElementById('gl');ls.innerHTML='';const gv=JSON.parse(localStorage.getItem(k)||'[]');gv.forEach((mp,i)=>{const dv=document.createElement('div');dv.className='gi';const lb=document.createElement('button');lb.className='glk';lb.textContent='🔗';lb.title='Get Notion Embed Link';lb.onclick=(e)=>{e.stopPropagation();getLink(i)};dv.appendChild(lb);const sp=document.createElement('div');sp.style.flexGrow=1;sp.onclick=()=>ld(i);const td=document.createElement('div');td.className='gt';td.textContent=mp.title;const dd=document.createElement('div');dd.className='gd';dd.textContent=new Date(mp.ts).toLocaleString();sp.appendChild(td);sp.appendChild(dd);const bt=document.createElement('button');bt.className='dgb';bt.textContent='×';bt.onclick=(e)=>{e.stopPropagation();dlg(i)};dv.appendChild(sp);dv.appendChild(bt);ls.appendChild(dv)})}function nw(){clr();mkn('New Mindmap',innerWidth/2-70,innerHeight/2-30);document.getElementById('t').value='';ci=null;ot=''}document.getElementById('sv').onclick=sv;document.getElementById('sa').onclick=sa;document.getElementById('n').onclick=nw;document.getElementById('u').onclick=()=>{if(hi>0){rst(h[--hi])}};document.getElementById('r').onclick=()=>{if(hi<h.length-1){rst(h[++hi])}};document.getElementById('tg').onclick=()=>{g.style.display=(g.style.display==='none')?'block':'none'};document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){e.preventDefault();if(hi>0){rst(h[--hi])}}else if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.key==='z'&&e.shiftKey))){e.preventDefault();if(hi<h.length-1){rst(h[++hi])}}});const uP=new URLSearchParams(window.location.search);const mI=uP.get('mapId');const gv=JSON.parse(localStorage.getItem(k)||'[]');let iI=null;if(mI!==null&&mI!==''){const i=parseInt(mI);if(i>=0&&i<gv.length){iI=i}}if(iI!==null){const tli=iI;clr();gv[tli].nodes.forEach(n=>mkn(n.t,n.l,n.tp,n.p,n.id,n.w,n.h,true));document.getElementById('t').value=gv[tli].title;ot=gv[tli].title;ci=tli}else{mkn('New Idea',innerWidth/2-70,innerHeight/2-30,null,null,null,null,true)}cap();rgl()})();</script>
+<style>
+  /* Inter Font Import and Basic Reset */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+  /* Custom Properties for Modern Look */
+  :root {
+    --bg-color: #f7f7f7;
+    --node-bg: #ffffff;
+    --node-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 5px 15px rgba(0, 0, 0, 0.05);
+    --node-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.08);
+    --border-color: #e0e0e0;
+    --text-color: #333333;
+    --subtle-text: #888888;
+    --accent-color: #4A90E2; /* Notion blue */
+    --danger-color: #E05252;
+    --control-bg: rgba(255, 255, 255, 0.9);
+    --control-button-bg: #f2f2f2;
+    --control-button-hover-bg: #e5e5e5;
+    --control-button-active-bg: #d4d4d4;
+  }
+
+  /* Base Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-color);
+    overflow: hidden;
+    height: 100vh;
+    color: var(--text-color);
+  }
+
+  /* Canvas and SVG */
+  #c {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    cursor: grab;
+  }
+  #c.grabbing {
+    cursor: grabbing;
+  }
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .conn {
+    /* Kept original style for line appearance */
+    stroke: #ccc;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Node Styles */
+  .node {
+    position: absolute;
+    background: var(--node-bg); /* Use modern variable */
+    border-radius: 8px; /* Softer corners */
+    padding: 12px 18px;
+    min-width: 80px;
+    box-shadow: var(--node-shadow); /* Use modern variable */
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    z-index: 10;
+    border: 1px solid var(--border-color); /* Added subtle border */
+  }
+  .node:hover {
+    transform: scale(1.01); /* Subtle hover scale */
+    box-shadow: var(--node-hover-shadow); /* Use modern variable */
+    z-index: 20;
+  }
+  .node.drag {
+    opacity: 0.85; /* Slight change from .75 */
+    z-index: 1000;
+  }
+  .txt {
+    outline: none;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 500; /* Slightly less bold */
+    color: var(--text-color); /* Use modern variable */
+    width: 100%;
+    text-align: center;
+    cursor: text;
+    white-space: pre-wrap; /* Allow wrapping */
+  }
+  .bdy {
+    cursor: grab; /* Use grab for modern feel */
+    padding: 12px 18px;
+    margin: -12px -18px;
+    position: relative;
+    min-height: 40px;
+  }
+  .rh {
+    position: absolute;
+    bottom: 0; /* Changed from top:0 to bottom:0 for a different handle feel */
+    right: 0; /* Changed from -8px to 0 */
+    width: 20px; /* Wider/taller hit area */
+    height: 20px;
+    cursor: nwse-resize; /* Diagonal resize */
+    z-index: 40;
+    /* Visual resize handle in the corner */
+    background: radial-gradient(circle at top left, transparent 50%, #ccc 50%);
+    border-bottom-right-radius: 8px;
+    opacity: 0.7;
+    transition: opacity 0.15s ease-out;
+  }
+  .node:hover .rh {
+    opacity: 1;
+  }
+
+  /* Actions (Add/Delete) */
+  .acts {
+    position: absolute;
+    top: -36px; /* Moved up for better visibility */
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 4px; /* Added gap */
+    z-index: 50;
+  }
+  .node:hover .acts {
+    display: flex;
+  }
+  .acts button {
+    width: 30px; /* Slightly smaller buttons */
+    height: 30px;
+    border-radius: 6px; /* Square with soft corners */
+    border: none;
+    background: var(--control-button-bg);
+    color: var(--subtle-text);
+    font-size: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-out;
+  }
+  .acts button:hover {
+     background: var(--control-button-hover-bg);
+     transform: translateY(-1px);
+  }
+  .add {
+    color: var(--accent-color); /* Blue + */
+    font-weight: 700;
+  }
+  .del {
+    color: var(--danger-color); /* Red x */
+    font-weight: 700;
+  }
+  /* Original delete button positioning (kept for functionality) */
+  .del {
+    position: static; /* Resetting the original position to make it part of acts */
+    top: auto;
+    right: auto;
+    margin: 0;
+  }
+
+  /* Control Panel */
+  #ctrl {
+    position: fixed;
+    top: 16px; /* Moved slightly down */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px; /* Slightly larger gap */
+    background: var(--control-bg); /* Use modern variable */
+    padding: 8px 12px; /* Increased padding */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    z-index: 50;
+    opacity: 0.9; /* Subtle opacity change */
+    transition: opacity 0.2s ease-in-out;
+  }
+  #ctrl:hover {
+    opacity: 1;
+  }
+  #ctrl button {
+    padding: 8px 10px; /* Adjusted padding */
+    border-radius: 6px; /* Softer radius */
+    border: none;
+    background: var(--control-button-bg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Lighter shadow */
+    cursor: pointer;
+    font-size: 16px; /* Adjusted size */
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-out;
+  }
+  #ctrl button:hover {
+    background: var(--control-button-hover-bg);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+  #ctrl button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  #ctrl input {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    width: 160px; /* Slightly wider */
+    font-size: 15px; /* Adjusted size */
+    background: var(--node-bg);
+    color: var(--text-color);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Gallery */
+  #gal {
+    position: fixed;
+    right: 16px; /* Adjusted position */
+    top: 60px;
+    width: 300px; /* Slightly wider */
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--control-bg);
+    padding: 12px; /* Adjusted padding */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: none;
+    border: 1px solid var(--border-color);
+  }
+  #gal h3 {
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  .gi {
+    padding: 8px 12px; /* Adjusted padding */
+    margin-bottom: 8px;
+    background: #fcfcfc;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #eee;
+    transition: background-color 0.15s;
+  }
+  .gi:hover {
+    background: #e9e9e9;
+  }
+  .gt {
+    flex-grow: 1;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .gd {
+    font-size: 11px;
+    color: var(--subtle-text);
+    margin-top: 2px;
+  }
+  .dgb {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    font-size: 18px; /* Adjusted size */
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+  .dgb:hover {
+    color: #c0392b;
+  }
+  .glk {
+    background: none;
+    border: none;
+    color: var(--subtle-text);
+    font-size: 18px;
+    cursor: pointer;
+    margin-right: 8px;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+  .glk:hover {
+    color: #555;
+  }
+
+  /* Modals */
+  .m-o {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Slightly lighter overlay */
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .m-b {
+    background: var(--node-bg);
+    padding: 24px; /* Increased padding */
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+    width: 90%;
+    max-width: 400px; /* Slightly wider modal */
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  .m-b h4 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: var(--text-color);
+  }
+  #u-o #u-d {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 20px 0; /* Adjusted margin */
+    border: 1px solid var(--border-color);
+    background: #fdfdfd;
+    font-size: 14px;
+    word-break: break-all;
+    text-align: left;
+    border-radius: 6px;
+    font-family: monospace;
+  }
+  #p-o #p-i {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  .m-b-g button {
+    padding: 10px 20px; /* Larger buttons */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .m-b-g button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  .b-p {
+    background: #2ecc71; /* Green check */
+    color: white;
+  }
+  .b-s {
+    background: #e74c3c; /* Red X */
+    color: white;
+  }
+  .b-i {
+    background: #3498db; /* Blue info/ok */
+    color: white;
+  }
+</style>
+
+<div id="c"><svg id="s"></svg></div>
+<div id="ctrl"><input id="t" type="text" placeholder="Title"/><button id="u" title="Undo">↶</button><button id="r" title="Redo">↷</button><button id="sv" title="Save">💾</button><button id="sa" title="Save As">S A</button><button id="n" title="New">🔄</button><button id="tg" title="Gallery">📂</button></div>
+<div id="gal"><h3>Gallery</h3><div id="gl"></div></div>
+<div id="u-o" class="m-o"><div class="m-b"><h4>Copy this URL to embed this specific map in Notion:</h4><div id="u-d"></div><button onclick="document.getElementById('u-o').style.display='none'" class="m-b-g b-s">Close</button></div></div>
+<div id="p-o" class="m-o"><div class="m-b"><h4 id="pm"></h4><input type="text" id="p-i" placeholder="Enter title" style="display:none;"><div class="m-b-g"><button id="pc" class="b-p" style="display:none;">Confirm</button><button id="pnc" class="b-s" style="display:none;">Cancel</button><button id="pao" class="b-i" style="display:none;">OK</button></div></div></div>
+<script>
+  ((B = 'https://apption.co/embeds/263c4704', c = document.getElementById('c'), s = document.getElementById('s'), g = document.getElementById('gal'), uO = document.getElementById('u-o'), uD = document.getElementById('u-d'), pO = document.getElementById('p-o'), pM = document.getElementById('pm'), pI = document.getElementById('p-i'), pC = document.getElementById('pc'), pNC = document.getElementById('pnc'), pAO = document.getElementById('pao'), k = 'mgd') => {
+    let ns = [],
+      dr = null,
+      ox = 0,
+      oy = 0,
+      pn = false,
+      px = 0,
+      py = 0,
+      h = [],
+      hi = -1,
+      ci = null,
+      ot = '',
+      rz = null,
+      rs = {};
+
+    function ca(m) {
+      return new Promise(r => {
+        pM.textContent = m;
+        pI.style.display = 'none';
+        pC.style.display = 'none';
+        pNC.style.display = 'none';
+        pAO.style.display = 'inline-block';
+        const handler = () => {
+          pAO.removeEventListener('click', handler);
+          pO.style.display = 'none';
+          r()
+        };
+        pAO.addEventListener('click', handler);
+        pO.style.display = 'flex'
+      })
+    }
+
+    function cp(m, d = '') {
+      return new Promise(r => {
+        pM.textContent = m;
+        pI.value = d;
+        pI.style.display = 'block';
+        pC.style.display = 'inline-block';
+        pNC.style.display = 'inline-block';
+        pAO.style.display = 'none';
+        const hC = () => {
+          remH();
+          pO.style.display = 'none';
+          r(pI.value)
+        };
+        const hCN = () => {
+          remH();
+          pO.style.display = 'none';
+          r(null)
+        };
+        const remH = () => {
+          pC.removeEventListener('click', hC);
+          pNC.removeEventListener('click', hCN)
+        };
+        pC.addEventListener('click', hC);
+        pNC.addEventListener('click', hCN);
+        pO.style.display = 'flex';
+        pI.focus();
+        pI.select()
+      })
+    }
+
+    function cap() {
+      const st = {
+        nodes: ns.map(n => ({
+          id: n.id,
+          p: n.p,
+          t: n.el.querySelector('.txt').textContent,
+          l: parseFloat(n.el.style.left),
+          tp: parseFloat(n.el.style.top),
+          w: n.el.offsetWidth,
+          h: n.el.offsetHeight
+        })),
+        title: document.getElementById('t').value
+      };
+      if (hi < h.length - 1) h = h.slice(0, hi + 1);
+      h.push(JSON.parse(JSON.stringify(st)));
+      if (h.length > 50) h.shift();
+      else hi++;
+      document.getElementById('u').disabled = hi <= 0;
+      document.getElementById('r').disabled = hi >= h.length - 1
+    }
+
+    function rst(st) {
+      clr();
+      st.nodes.forEach(n => mkn(n.t, n.l, n.tp, n.p, n.id, n.w, n.h, true));
+      document.getElementById('t').value = st.title;
+      document.getElementById('u').disabled = hi <= 0;
+      document.getElementById('r').disabled = hi >= h.length - 1
+    }
+
+    function mkn(tx, x, y, p = null, id = null, w = null, ht = null, sk = false) {
+      const d = document.createElement('div');
+      d.className = 'node';
+      d.style.left = x + 'px';
+      d.style.top = y + 'px';
+      if (w) d.style.width = w + 'px';
+      if (ht) d.style.height = ht + 'px';
+      id = id || 'n' + Date.now() + Math.random().toString(36).substr(2, 5);
+      d.dataset.id = id;
+      d.dataset.p = p || '';
+      const b = document.createElement('div');
+      b.className = 'bdy';
+      const a = document.createElement('div');
+      a.className = 'acts';
+      const pl = document.createElement('button');
+      pl.className = 'add';
+      pl.textContent = '+';
+      pl.onclick = e => {
+        e.stopPropagation();
+        adc(id)
+      };
+      a.appendChild(pl);
+      b.appendChild(a);
+      if (p !== null) {
+        const dl = document.createElement('button');
+        dl.className = 'del';
+        dl.textContent = '×';
+        dl.onclick = e => {
+          e.stopPropagation();
+          dln(id)
+        };
+        b.appendChild(dl)
+      }
+      const td = document.createElement('div');
+      td.className = 'txt';
+      td.contentEditable = true;
+      td.textContent = tx;
+      if (w && ht) {
+        td.style.whiteSpace = 'normal';
+        td.dataset.mr = 'true'
+      }
+      let tm;
+      td.addEventListener('input', () => {
+        if (td.dataset.mr === 'true') return;
+        const mn = 80,
+          mx = 600,
+          tw = td.scrollWidth + 36;
+        d.style.width = Math.max(mn, Math.min(mx, tw)) + 'px';
+        drw();
+        clearTimeout(tm);
+        tm = setTimeout(() => cap(), 500)
+      });
+      b.appendChild(td);
+      d.appendChild(b);
+      const hd = document.createElement('div');
+      hd.className = 'rh';
+      hd.addEventListener('mousedown', e => {
+        e.stopPropagation();
+        srz(e, d)
+      });
+      d.appendChild(hd);
+      c.appendChild(d);
+      ns.push({
+        id,
+        el: d,
+        p
+      });
+      b.addEventListener('mousedown', e => {
+        if (e.target === b || e.target === td.parentElement) sdg(e, d)
+      });
+      drw();
+      if (!sk) cap();
+      return id
+    }
+
+    function srz(e, el) {
+      rz = el;
+      const td = el.querySelector('.txt');
+      td.style.whiteSpace = 'normal';
+      td.dataset.mr = 'true';
+      rs = {
+        x: e.clientX,
+        y: e.clientY,
+        w: el.offsetWidth,
+        h: el.offsetHeight
+      };
+      e.preventDefault();
+      document.addEventListener('mousemove', drz);
+      document.addEventListener('mouseup', stz)
+    }
+
+    function drz(e) {
+      if (!rz) return;
+      const dx = e.clientX - rs.x,
+        dy = e.clientY - rs.y;
+      rz.style.width = Math.max(80, rs.w + dx) + 'px';
+      rz.style.height = Math.max(40, rs.h + dy) + 'px';
+      drw()
+    }
+
+    function stz() {
+      if (rz) cap();
+      rz = null;
+      document.removeEventListener('mousemove', drz);
+      document.removeEventListener('mouseup', stz)
+    }
+
+    function adc(pid) {
+      const p = ns.find(n => n.id === pid);
+      if (!p) return;
+      const rc = p.el.getBoundingClientRect();
+      const ct = ns.filter(n => n.p === pid).length,
+        an = (Math.PI * 2 * ct / 5) + (Math.random() * .4 - .2),
+        d = 150;
+      const x = rc.left + rc.width / 2 + Math.cos(an) * d - 60,
+        y = rc.top + rc.height / 2 + Math.sin(an) * d - 30;
+      mkn('New Idea', x, y, pid)
+    }
+
+    function dln(id) {
+      const i = ns.findIndex(n => n.id === id);
+      if (i === -1) return;
+      ns.filter(n => n.p === id).forEach(kd => dln(kd.id));
+      ns[i].el.remove();
+      ns.splice(i, 1);
+      drw();
+      cap()
+    }
+
+    function sdg(e, el) {
+      dr = el;
+      dr.classList.add('drag');
+      const rc = dr.getBoundingClientRect();
+      ox = e.clientX - rc.left;
+      oy = e.clientY - rc.top;
+      e.preventDefault();
+      document.addEventListener('mousemove', dg);
+      document.addEventListener('mouseup', stg)
+    }
+
+    function dg(e) {
+      if (!dr) return;
+      dr.style.left = (e.clientX - ox) + 'px';
+      dr.style.top = (e.clientY - oy) + 'px';
+      drw()
+    }
+
+    function stg() {
+      if (dr) {
+        dr.classList.remove('drag');
+        cap()
+      }
+      dr = null;
+      document.removeEventListener('mousemove', dg);
+      document.removeEventListener('mouseup', stg)
+    }
+
+    function drw() {
+      s.innerHTML = '';
+      ns.forEach(n => {
+        if (!n.p) return;
+        const p = ns.find(x => x.id === n.p);
+        if (!p) return;
+        const pr = p.el.getBoundingClientRect(),
+          nr = n.el.getBoundingClientRect();
+        const x1 = pr.left + pr.width / 2,
+          y1 = pr.top + pr.height / 2,
+          x2 = nr.left + nr.width / 2,
+          y2 = nr.top + nr.height / 2,
+          mx = (x1 + x2) / 2,
+          my = (y1 + y2) / 2;
+        const pt = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pt.setAttribute('d', `M${x1},${y1} Q${mx},${y1} ${mx},${my} T${x2},${y2}`);
+        pt.setAttribute('class', 'conn');
+        s.appendChild(pt)
+      })
+    }
+    let ps;
+    c.addEventListener('mousedown', e => {
+      if (e.target === c || e.target === s) {
+        pn = true;
+        px = e.clientX;
+        py = e.clientY;
+        c.classList.add('grabbing');
+        ps = ns.map(n => ({
+          id: n.id,
+          l: parseFloat(n.el.style.left),
+          tp: parseFloat(n.el.style.top)
+        }))
+      }
+    });
+    document.addEventListener('mousemove', e => {
+      if (!pn) return;
+      const dx = e.clientX - px,
+        dy = e.clientY - py;
+      ns.forEach(n => {
+        n.el.style.left = (parseFloat(n.el.style.left) + dx) + 'px';
+        n.el.style.top = (parseFloat(n.el.style.top) + dy) + 'px'
+      });
+      px = e.clientX;
+      py = e.clientY;
+      drw()
+    });
+    document.addEventListener('mouseup', () => {
+      if (pn) {
+        const mv = ps.some((o, i) => {
+          const n = ns.find(nd => nd.id === o.id);
+          return n && (Math.abs(parseFloat(n.el.style.left) - o.l) > 5 || Math.abs(parseFloat(n.el.style.top) - o.tp) > 5)
+        });
+        if (mv) cap()
+      }
+      pn = false;
+      c.classList.remove('grabbing')
+    });
+    c.addEventListener('dblclick', e => {
+      if (e.target === c || e.target === s) mkn('New Idea', e.clientX - 60, e.clientY - 30)
+    });
+    async function sva(tt) {
+      const mp = {
+        title: tt,
+        nodes: ns.map(n => ({
+          id: n.id,
+          p: n.p,
+          t: n.el.querySelector('.txt').textContent,
+          l: parseFloat(n.el.style.left),
+          tp: parseFloat(n.el.style.top),
+          w: n.el.offsetWidth,
+          h: n.el.offsetHeight
+        })),
+        ts: Date.now()
+      };
+      const gv = JSON.parse(localStorage.getItem(k) || '[]');
+      gv.push(mp);
+      ci = gv.length - 1;
+      ot = tt;
+      localStorage.setItem(k, JSON.stringify(gv));
+      document.getElementById('t').value = tt;
+      rgl();
+      await ca(`Map saved as: ${tt}`)
+    }
+    async function sv() {
+      const tt = document.getElementById('t').value.trim();
+      if (ci !== null && ot !== '') {
+        const mp = {
+          title: tt || ot,
+          nodes: ns.map(n => ({
+            id: n.id,
+            p: n.p,
+            t: n.el.querySelector('.txt').textContent,
+            l: parseFloat(n.el.style.left),
+            tp: parseFloat(n.el.style.top),
+            w: n.el.offsetWidth,
+            h: n.el.offsetHeight
+          })),
+          ts: Date.now()
+        };
+        const gv = JSON.parse(localStorage.getItem(k) || '[]');
+        gv[ci] = mp;
+        ot = tt || ot;
+        localStorage.setItem(k, JSON.stringify(gv));
+        document.getElementById('t').value = ot;
+        rgl();
+        await ca(`Map changes saved to: ${ot}`)
+      } else {
+        await sa()
+      }
+    }
+    async function sa() {
+      let nT = await cp("Enter a title for the new map:", document.getElementById('t').value.trim() || 'Untitled Map');
+      if (nT === null) {
+        await ca("Save As cancelled.");
+        return
+      }
+      nT = nT.trim();
+      if (nT === '') {
+        await ca("A title is required. Save As cancelled.");
+        return
+      }
+      await sva(nT)
+    }
+
+    function ld(ix) {
+      const gv = JSON.parse(localStorage.getItem(k) || '[]');
+      if (!gv[ix]) return;
+      clr();
+      gv[ix].nodes.forEach(n => mkn(n.t, n.l, n.tp, n.p, n.id, n.w, n.h, true));
+      document.getElementById('t').value = gv[ix].title;
+      ot = gv[ix].title;
+      ci = ix;
+      cap()
+    }
+
+    function dlg(ix) {
+      const gv = JSON.parse(localStorage.getItem(k) || '[]');
+      gv.splice(ix, 1);
+      localStorage.setItem(k, JSON.stringify(gv));
+      if (ci === ix) {
+        ci = null
+      } else if (ci > ix) {
+        ci--
+      }
+      rgl()
+    }
+
+    function clr() {
+      ns.forEach(n => n.el.remove());
+      ns = [];
+      drw()
+    }
+
+    function getLink(ix) {
+      const eU = B + '?mapId=' + ix;
+      uD.textContent = eU;
+      uO.style.display = 'flex'
+    }
+
+    function rgl() {
+      const ls = document.getElementById('gl');
+      ls.innerHTML = '';
+      const gv = JSON.parse(localStorage.getItem(k) || '[]');
+      gv.forEach((mp, i) => {
+        const dv = document.createElement('div');
+        dv.className = 'gi';
+        const lb = document.createElement('button');
+        lb.className = 'glk';
+        lb.textContent = '🔗';
+        lb.title = 'Get Notion Embed Link';
+        lb.onclick = (e) => {
+          e.stopPropagation();
+          getLink(i)
+        };
+        dv.appendChild(lb);
+        const sp = document.createElement('div');
+        sp.style.flexGrow = 1;
+        sp.onclick = () => ld(i);
+        const td = document.createElement('div');
+        td.className = 'gt';
+        td.textContent = mp.title;
+        const dd = document.createElement('div');
+        dd.className = 'gd';
+        dd.textContent = new Date(mp.ts).toLocaleString();
+        sp.appendChild(td);
+        sp.appendChild(dd);
+        const bt = document.createElement('button');
+        bt.className = 'dgb';
+        bt.textContent = '×';
+        bt.onclick = (e) => {
+          e.stopPropagation();
+          dlg(i)
+        };
+        dv.appendChild(sp);
+        dv.appendChild(bt);
+        ls.appendChild(dv)
+      })
+    }
+
+    function nw() {
+      clr();
+      mkn('New Mindmap', innerWidth / 2 - 70, innerHeight / 2 - 30);
+      document.getElementById('t').value = '';
+      ci = null;
+      ot = ''
+    }
+    document.getElementById('sv').onclick = sv;
+    document.getElementById('sa').onclick = sa;
+    document.getElementById('n').onclick = nw;
+    document.getElementById('u').onclick = () => {
+      if (hi > 0) {
+        rst(h[--hi])
+      }
+    };
+    document.getElementById('r').onclick = () => {
+      if (hi < h.length - 1) {
+        rst(h[++hi])
+      }
+    };
+    document.getElementById('tg').onclick = () => {
+      g.style.display = (g.style.display === 'none') ? 'block' : 'none'
+    };
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        if (hi > 0) {
+          rst(h[--hi])
+        }
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        if (hi < h.length - 1) {
+          rst(h[++hi])
+        }
+      }
+    });
+    const uP = new URLSearchParams(window.location.search);
+    const mI = uP.get('mapId');
+    const gv = JSON.parse(localStorage.getItem(k) || '[]');
+    let iI = null;
+    if (mI !== null && mI !== '') {
+      const i = parseInt(mI);
+      if (i >= 0 && i < gv.length) {
+        iI = i
+      }
+    }
+    if (iI !== null) {
+      const tli = iI;
+      clr();
+      gv[tli].nodes.forEach(n => mkn(n.t, n.l, n.tp, n.p, n.id, n.w, n.h, true));
+      document.getElementById('t').value = gv[tli].title;
+      ot = gv[tli].title;
+      ci = tli
+    } else {
+      mkn('New Idea', innerWidth / 2 - 70, innerHeight / 2 - 30, null, null, null, null, true)
+    }
+    cap();
+    rgl()
+  })();
+</script>
