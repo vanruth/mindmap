@@ -270,6 +270,11 @@ function captureState() {
 function restoreState(state) {
   clearCanvas();
   state.nodes.forEach(n => createNode(n.text, n.x, n.y, n.parentId, n.id, n.width, n.height, true));
+  // NEW: Force correct auto-size for all nodes (prevents "Central Idea" bug)
+  nodes.forEach(node => {
+    const textEl = node.el.querySelector('.node-text');
+    updateNodeSize(node.el, textEl);
+  });
   mapTitleInput.value = state.title;
   drawConnections();
   updateHistoryButtons();
