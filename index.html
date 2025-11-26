@@ -751,8 +751,11 @@ window.onload = function() {
 };
 // Hide dropdowns/modals on click outside
 window.addEventListener('click', (e)=>{
-  if(!document.getElementById('save-dropdown-btn').contains(e.target)) document.getElementById('save-dropdown-menu').style.display='none';
-  // REMOVED: Gallery closing logic from click outside listener
+  // Only handle closing the save dropdown menu
+  if(!document.getElementById('save-dropdown-btn').contains(e.target)) {
+    document.getElementById('save-dropdown-menu').style.display='none';
+  }
+  // The gallery is now only controlled by the #gallery-btn click handler.
 });
 </script>
 </body>
