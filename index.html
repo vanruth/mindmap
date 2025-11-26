@@ -159,6 +159,33 @@ function safeSetLocalStorage(key, value) {
   try { localStorage.setItem(key, JSON.stringify(value)); }
   catch (e) { showAlert("Local storage not available. Cannot save."); }
 }
+// *** NEW FUNCTION FOR AUTO-RESIZE LOGIC ***
+function updateNodeSize(nodeEl, textEl) {
+  const MIN_WIDTH = 80;
+  const MAX_WIDTH = 250; // Horizontal size limit before enabling vertical wrapping
+  const PADDING = 32; // 16px left + 16px right padding
+
+  // 1. Temporarily allow no-wrap to measure the true width needed for a single line
+  // This is the key to measuring the "unconstrained" width for the content.
+  textEl.style.whiteSpace = 'nowrap';
+  let requiredWidth = textEl.scrollWidth + PADDING;
+
+  if (requiredWidth <= MAX_WIDTH) {
+    // Horizontal growth (single line mode)
+    nodeEl.style.width = Math.max(MIN_WIDTH, requiredWidth) + 'px';
+    nodeEl.style.height = ''; // Clear height to allow auto-sizing if it grows short
+    textEl.style.whiteSpace = 'nowrap'; // Enforce single line
+  } else {
+    // Max width reached, vertical growth (wrapping mode)
+    nodeEl.style.width = MAX_WIDTH + 'px';
+    nodeEl.style.height = ''; // Clear height to allow vertical auto-sizing
+    textEl.style.whiteSpace = 'normal'; // Allow wrapping
+  }
+  
+  // Re-center text (already done by CSS, but set explicitly for robustness)
+  textEl.style.textAlign = 'center';
+}
+// *** END NEW FUNCTION ***
 
 // Modal Functions (alert, prompt, confirm, link)
 function showAlert(message) {
@@ -306,11 +333,20 @@ function createNode(text, x, y, parentId = null, id = null, w = null, h = null, 
     if (e.target.closest('.action-button') || e.target.closest('.resize-handle') || e.target === textEl) return;
     startTouchDrag(e, nodeEl);
   });
+  // *** MODIFIED INPUT LISTENER ***
   textEl.addEventListener('input', () => {
-    if (!nodeEl.style.height || nodeEl.offsetHeight < 40) {
-      const minWidth = 80;
-      nodeEl.style.width = Math.max(minWidth, textEl.scrollWidth + 32) + 'px';
-    }
+    updateNodeSize(nodeEl, textEl);
+    drawConnections();
+  });
+  // *** END MODIFIED INPUT LISTENER ***
+  
+  textEl.addEventListener('blur', captureState);
+
+  // *** MODIFIED INITIAL SIZE LOGIC ***
+  if (!w) { 
+    updateNodeSize(nodeEl, textEl);
+  }
+  // *** END MODIFIED INITIAL SIZE LOGIC ***
     drawConnections();
   });
   textEl.addEventListener('blur', captureState);
