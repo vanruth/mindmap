@@ -282,6 +282,64 @@
         .item-action-btn.delete:hover {
             color: var(--danger);
         }
+        /* Split Save Button */
+.save-group {
+    display: flex;
+    position: relative;
+}
+
+#save-main-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#save-dropdown-btn {
+    width: 32px;
+    height: 32px;
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#save-dropdown-menu {
+    position: absolute;
+    top: 38px;
+    right: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow-large);
+    display: none;
+    flex-direction: column;
+    width: 140px;
+    z-index: 200;
+}
+
+.save-dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.save-dropdown-item:hover {
+    background: var(--hover-bg);
+}
+
+/* Delete X only on hover */
+.action-button.delete-btn {
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.node:hover .delete-btn {
+    opacity: 1;
+}
+
 
         /* Modal/Dialog */
         #modal {
@@ -380,9 +438,17 @@
         <input id="map-title" type="text" placeholder="Untitled">
         <button id="undo-btn" title="Undo"><i data-lucide="undo-2"></i></button>
         <button id="redo-btn" title="Redo"><i data-lucide="redo-2"></i></button>
-        <button id="save-btn" title="Save"><i data-lucide="save"></i></button>
-        <button id="save-as-btn" title="Save As"><i data-lucide="save"></i>A</button>
-        <button id="new-btn" title="New Map"><i data-lucide="rotate-ccw"></i></button>
+        <div class="save-group">
+    <button id="save-main-btn" title="Save"><i data-lucide="save"></i></button>
+    <button id="save-dropdown-btn" title="More Save Options"><i data-lucide="chevron-down"></i></button>
+
+    <div id="save-dropdown-menu">
+        <div class="save-dropdown-item" id="save-as-menu-item">Save As…</div>
+    </div>
+</div>
+
+<button id="new-btn" title="New Map"><i data-lucide="file-plus"></i></button>
+
         <button id="gallery-btn" title="Open Gallery"><i data-lucide="folder-open"></i></button>
     </div>
 
@@ -1079,6 +1145,24 @@
             }
         }
     });
+    const saveDropdownBtn = document.getElementById('save-dropdown-btn');
+const saveDropdownMenu = document.getElementById('save-dropdown-menu');
+const saveAsMenuItem = document.getElementById('save-as-menu-item');
+const saveMainBtn = document.getElementById('save-main-btn');
+
+saveMainBtn.onclick = saveMap;
+saveAsMenuItem.onclick = saveAsMap;
+
+saveDropdownBtn.onclick = (e) => {
+    e.stopPropagation();
+    saveDropdownMenu.style.display =
+        saveDropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+};
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => {
+    saveDropdownMenu.style.display = 'none';
+});
 
     // Map title input change also captures state
     mapTitleInput.addEventListener('blur', captureState);
