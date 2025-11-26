@@ -160,35 +160,7 @@ function safeSetLocalStorage(key, value) {
   catch (e) { showAlert("Local storage not available. Cannot save."); }
 }
 
-// *** NEW FUNCTION FOR AUTO-RESIZE LOGIC ***
-function updateNodeSize(nodeEl, textEl) {
-  const MIN_WIDTH = 80;
-  const MAX_WIDTH = 250; // Horizontal size limit before enabling vertical wrapping
-  const PADDING = 32; // 16px left + 16px right padding
-
-  // 1. Temporarily allow no-wrap to measure the true width needed for a single line
-  // This is the key to measuring the "unconstrained" width for the content.
-  textEl.style.whiteSpace = 'nowrap';
-  let requiredWidth = textEl.scrollWidth + PADDING;
-
-  if (requiredWidth <= MAX_WIDTH) {
-    // Horizontal growth (single line mode)
-    nodeEl.style.width = Math.max(MIN_WIDTH, requiredWidth) + 'px';
-    nodeEl.style.height = ''; // Clear height to allow auto-sizing if it grows short
-    textEl.style.whiteSpace = 'nowrap'; // Enforce single line
-  } else {
-    // Max width reached, vertical growth (wrapping mode)
-    nodeEl.style.width = MAX_WIDTH + 'px';
-    nodeEl.style.height = ''; // Clear height to allow vertical auto-sizing
-    textEl.style.whiteSpace = 'normal'; // Allow wrapping
-  }
-  
-  // Re-center text (already done by CSS, but set explicitly for robustness)
-  textEl.style.textAlign = 'center';
-}
-// *** END NEW FUNCTION ***
-
-// Modal Functions (alert, prompt, link)
+// Modal Functions (alert, prompt, confirm, link)
 function showAlert(message) {
   return new Promise(resolve => {
     modalMessage.textContent = message;
@@ -211,6 +183,30 @@ function showPrompt(message, defaultValue='') {
     function removeHandlers() { modalConfirm.removeEventListener('click', handleConfirm); modalCancel.removeEventListener('click', handleCancel);}
     modalConfirm.addEventListener('click', handleConfirm); modalCancel.addEventListener('click', handleCancel);
     modal.style.display = 'flex'; modalInput.focus(); modalInput.select();
+  });
+}
+function showConfirm(message) {
+  return new Promise(resolve => {
+    modalMessage.textContent = message; 
+    modalInput.style.display = 'none';
+    linkDisplayContainer.style.display = 'none';
+    
+    modalCancel.style.display = 'inline-block'; 
+    modalConfirm.style.display = 'inline-block'; 
+    modalOK.style.display = 'none';
+    
+    const handleConfirm = () => { removeHandlers(); modal.style.display = 'none'; resolve(true);}
+    const handleCancel = () => { removeHandlers(); modal.style.display = 'none'; resolve(false);}
+    
+    function removeHandlers() { 
+      modalConfirm.removeEventListener('click', handleConfirm); 
+      modalCancel.removeEventListener('click', handleCancel);
+    }
+    
+    modalConfirm.addEventListener('click', handleConfirm); 
+    modalCancel.addEventListener('click', handleCancel);
+    modal.style.display = 'flex'; 
+    modalConfirm.focus();
   });
 }
 function showLink(message, link) {
@@ -310,22 +306,15 @@ function createNode(text, x, y, parentId = null, id = null, w = null, h = null, 
     if (e.target.closest('.action-button') || e.target.closest('.resize-handle') || e.target === textEl) return;
     startTouchDrag(e, nodeEl);
   });
-  
-  // *** MODIFIED INPUT LISTENER ***
   textEl.addEventListener('input', () => {
-    updateNodeSize(nodeEl, textEl);
+    if (!nodeEl.style.height || nodeEl.offsetHeight < 40) {
+      const minWidth = 80;
+      nodeEl.style.width = Math.max(minWidth, textEl.scrollWidth + 32) + 'px';
+    }
     drawConnections();
   });
-  // *** END MODIFIED INPUT LISTENER ***
-  
   textEl.addEventListener('blur', captureState);
-
-  // *** MODIFIED INITIAL SIZE LOGIC ***
-  if (!w) { 
-    updateNodeSize(nodeEl, textEl);
-  }
-  // *** END MODIFIED INITIAL SIZE LOGIC ***
-  
+  if (!w) { const minWidth = 80; nodeEl.style.width = Math.max(minWidth, textEl.scrollWidth + 32) + 'px';}
   drawConnections();
   lucide.createIcons();
   if (!skipCapture) captureState();
@@ -666,7 +655,7 @@ function renderGallery() {
     delBtn.innerHTML = "🗑️";
     delBtn.addEventListener('click',async (e)=>{
       e.stopPropagation();
-      if(await showPrompt('Really delete map? Type YES:',"") === "YES"){
+      if(await showConfirm('Are you sure you want to delete this map?')){ // CHANGED: Now uses showConfirm
         galleryData.splice(idx,1);
         safeSetLocalStorage(LOCAL_STORAGE_KEY,galleryData);
         renderGallery();
@@ -703,8 +692,8 @@ document.getElementById('save-as-menu-item').onclick = async ()=>{
 };
 document.getElementById('new-btn').onclick = async ()=>{
   if(nodes.length) {
-    const ans = await showPrompt("Clear current map? Type YES to confirm:","");
-    if(ans !== "YES") return;
+    const ans = await showConfirm("Clear current map and start a new one?"); // CHANGED: Now uses showConfirm
+    if(!ans) return;
   }
   clearCanvas(); nodes=[]; history=[]; historyIndex=-1; currentMapIndex=null; mapTitleInput.value='Untitled';
   originalTitle='';
@@ -724,7 +713,7 @@ window.onload = function() {
 // Hide dropdowns/modals on click outside
 window.addEventListener('click', (e)=>{
   if(!document.getElementById('save-dropdown-btn').contains(e.target)) document.getElementById('save-dropdown-menu').style.display='none';
-  if(!gallery.contains(e.target) && !document.getElementById('gallery-btn').contains(e.target)) gallery.style.display='none';
+  // REMOVED: Gallery closing logic from click outside listener
 });
 </script>
 </body>
