@@ -17,6 +17,12 @@
     --control-button-bg: #fff;
     --control-button-hover-bg: #f5f5f5;
     --control-button-active-bg: #e0e0e0;
+
+    /* Dialog/Modal specific colors */
+    --dialog-bg: #ffffff;
+    --confirm-button-bg: #000000;
+    --cancel-button-color: #555555;
+    --input-border-color: #ccc;
   }
 
   /* Base Styles */
@@ -58,11 +64,11 @@
     fill: none;
   }
 
-  /* Node Styles (Based on original CSS but cleaned up) */
+  /* Node Styles (Matching "New Idea" box) */
   .node {
     position: absolute;
     background: var(--node-bg);
-    border-radius: 10px; /* Original radius */
+    border-radius: 10px; /* Rounded corners */
     padding: 12px 18px;
     min-width: 80px;
     box-shadow: var(--node-shadow);
@@ -70,12 +76,12 @@
     z-index: 10;
   }
   .node:hover {
-    transform: scale(1.03); /* Original hover scale */
+    transform: scale(1.03);
     box-shadow: var(--node-hover-shadow);
     z-index: 20;
   }
   .node.drag {
-    opacity: .75; /* Original opacity */
+    opacity: .75;
     z-index: 1000;
   }
   .txt {
@@ -83,15 +89,15 @@
     border: none;
     background: transparent;
     font-size: 16px;
-    font-weight: 600; /* Original weight */
+    font-weight: 600;
     color: var(--text-color);
     width: 100%;
     text-align: center;
     cursor: text;
-    white-space: nowrap; /* Original setting */
+    white-space: nowrap;
   }
   .bdy {
-    cursor: move; /* Original cursor */
+    cursor: move;
     padding: 12px 18px;
     margin: -12px -18px;
     position: relative;
@@ -100,12 +106,12 @@
   .rh {
     position: absolute;
     top: 0;
-    right: -8px; /* Original position */
+    right: -8px;
     width: 16px;
     height: 100%;
-    cursor: ew-resize; /* Original cursor */
+    cursor: ew-resize;
     z-index: 40;
-    background: transparent; /* Make it invisible but functional */
+    background: transparent;
   }
 
   /* Actions (Add/Delete) - Original Styling */
@@ -153,7 +159,7 @@
     justify-content: center;
   }
 
-  /* Control Panel */
+  /* Control Panel (Matching screenshot: "Title" input, flat icons) */
   #ctrl {
     position: fixed;
     top: 12px;
@@ -166,14 +172,15 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,.12);
     z-index: 50;
-    opacity: 1; /* Made fully visible by default as per screenshot */
-    transition: none; /* Removing hover fade */
+    opacity: 1;
+    transition: none;
   }
   #ctrl input {
     padding: 6px 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
     width: 140px;
+    font-weight: 500;
   }
   #ctrl button {
     padding: 6px 10px;
@@ -188,7 +195,7 @@
     opacity: 0.4;
   }
 
-  /* Gallery Styling (Updated to match screenshot look) */
+  /* Gallery Styling */
   #gal {
     position: fixed;
     right: 12px;
@@ -196,7 +203,7 @@
     width: 280px;
     max-height: 85vh;
     overflow: auto;
-    background: rgba(255,255,255,1); /* Fully opaque */
+    background: rgba(255,255,255,1);
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,.12);
@@ -211,9 +218,9 @@
     color: #222;
   }
   .gi {
-    padding: 8px 10px; /* Adjusted padding */
+    padding: 8px 10px;
     margin-bottom: 6px;
-    background: #fff; /* White background for list item */
+    background: #fff;
     border-radius: 6px;
     cursor: pointer;
     display: flex;
@@ -252,82 +259,103 @@
     margin-right: 4px;
   }
 
-  /* Modals */
+  /* Modals (Updated to match "Enter a title" dialog) */
   .m-o {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,.6);
+    background: rgba(0,0,0,.35); /* Lighter backdrop to match screenshot */
     z-index: 10000;
     display: none;
     align-items: center;
     justify-content: center;
   }
   .m-b {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.3);
+    background: var(--dialog-bg);
+    padding: 24px; /* Increased padding */
+    border-radius: 12px; /* Smoother radius */
+    box-shadow: 0 5px 20px rgba(0,0,0,.2);
     width: 90%;
-    max-width: 350px;
-    text-align: center;
+    max-width: 380px; /* Adjusted size */
+    text-align: left; /* Text alignment changed for h4/input group */
     font-family: 'Inter', sans-serif;
   }
   .m-b h4 {
-    margin-bottom: 15px;
-    font-size: 18px;
-    color: #333
+    margin-bottom: 12px;
+    font-size: 16px; /* Slightly smaller font for prompt text */
+    font-weight: 500;
+    color: #333;
   }
+
+  /* Link Display Modal Content */
   #u-o #u-d {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
+    margin: 10px 0 20px 0;
+    border: 1px solid var(--input-border-color);
     background: #f7f7f7;
     font-size: 14px;
     word-break: break-all;
     text-align: left;
     border-radius: 6px;
   }
+
+  /* Prompt/Save Modal Input */
   #p-o #p-i {
     width: 100%;
-    padding: 10px;
+    padding: 12px; /* Larger padding */
     margin-top: 10px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 8px; /* Matching screenshot input */
     font-size: 16px;
     box-sizing: border-box;
   }
+
+  /* Button Group Alignment and Styling (Matching screenshot) */
+  .m-b-g {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    width: 100%;
+    padding-top: 8px;
+  }
   .m-b-g button {
-    padding: 8px 15px;
+    padding: 10px 18px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px; /* Matching screenshot buttons */
     cursor: pointer;
-    margin: 5px;
-    font-size: 16px;
-    font-weight: 500;
+    margin-left: 10px; /* Spacing between buttons */
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.1s;
   }
-  .b-p {
-    background: #4CAF50;
-    color: white
+  .b-p, .b-i {
+    /* Confirm/OK button styles - Black background, white text */
+    background: var(--confirm-button-bg);
+    color: white;
   }
-  .b-s {
-    background: #f44336;
-    color: white
+  .b-s, #pnc {
+    /* Cancel button styles - Transparent background, gray text */
+    background: transparent;
+    color: var(--cancel-button-color);
+    box-shadow: none;
   }
-  .b-i {
-    background: #2196F3;
-    color: white
+  .b-s:hover, #pnc:hover {
+      color: #000;
+      background: #f0f0f0;
+  }
+  .b-p:hover, .b-i:hover {
+      background: #333;
   }
 </style>
 
 <div id="c"><svg id="s"></svg></div>
 <div id="ctrl"><input id="t" type="text" placeholder="Title"/><button id="u" title="Undo">↶</button><button id="r" title="Redo">↷</button><button id="sv" title="Save">💾</button><button id="sa" title="Save As">S A</button><button id="n" title="New">🔄</button><button id="tg" title="Gallery">📂</button></div>
 <div id="gal"><h3>Gallery</h3><div id="gl"></div></div>
-<div id="u-o" class="m-o"><div class="m-b"><h4>Copy this URL to embed this specific map in Notion:</h4><div id="u-d"></div><button onclick="document.getElementById('u-o').style.display='none'" class="m-b-g b-s">Close</button></div></div>
-<div id="p-o" class="m-o"><div class="m-b"><h4 id="pm"></h4><input type="text" id="p-i" placeholder="Enter title" style="display:none;"><div class="m-b-g"><button id="pc" class="b-p" style="display:none;">Confirm</button><button id="pnc" class="b-s" style="display:none;">Cancel</button><button id="pao" class="b-i" style="display:none;">OK</button></div></div></div>
+<div id="u-o" class="m-o"><div class="m-b"><h4>Copy this URL to embed this specific map in Notion:</h4><div id="u-d"></div><div class="m-b-g"><button onclick="document.getElementById('u-o').style.display='none'" class="b-s">Close</button></div></div></div>
+<div id="p-o" class="m-o"><div class="m-b"><h4 id="pm"></h4><input type="text" id="p-i" placeholder="Enter title" style="display:none;"><div class="m-b-g"><button id="pnc" class="b-s" style="display:none;">Cancel</button><button id="pc" class="b-p" style="display:none;">Confirm</button><button id="pao" class="b-i" style="display:none;">OK</button></div></div></div>
 
 <script>
   ((B = 'https://apption.co/embeds/263c4704', c = document.getElementById('c'), s = document.getElementById('s'), g = document.getElementById('gal'), uO = document.getElementById('u-o'), uD = document.getElementById('u-d'), pO = document.getElementById('p-o'), pM = document.getElementById('pm'), pI = document.getElementById('p-i'), pC = document.getElementById('pc'), pNC = document.getElementById('pnc'), pAO = document.getElementById('pao'), k = 'mgd') => {
