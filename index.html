@@ -321,8 +321,13 @@ function createNode(text, x, y, parentId = null, id = null, w = null, h = null, 
   resizeHandle.addEventListener('mousedown', (e) => {e.stopPropagation(); startResize(e, nodeEl);});
   resizeHandle.addEventListener('touchstart', (e) => {e.stopPropagation(); startTouchResize(e, nodeEl);});
   nodeEl.appendChild(resizeHandle);
-  if (w) nodeEl.style.width = w + 'px';
-  if (h) nodeEl.style.height = h + 'px';
+if (w && h) {
+  nodeEl.style.width = w + 'px';
+  nodeEl.style.height = h + 'px';
+} else {
+  // New nodes only
+  updateNodeSize(nodeEl, textEl);
+}
   canvas.appendChild(nodeEl);
   nodes.push({ id, el: nodeEl, parentId });
   nodeEl.addEventListener('mousedown', (e) => {
