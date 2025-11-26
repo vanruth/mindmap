@@ -339,11 +339,12 @@ if (w && h) {
     startTouchDrag(e, nodeEl);
   });
   // *** MODIFIED INPUT LISTENER ***
-    textEl.addEventListener('input', () => {
-    updateNodeSize(nodeEl, textEl);
-    drawConnections();
-  });
-  textEl.addEventListener('blur', captureState);
+textEl.addEventListener('input', () => {
+  updateNodeSize(nodeEl, textEl);
+  drawConnections();
+  captureState();
+});
+textEl.addEventListener('blur', captureState);
 
   // Initial auto-resize if width not provided
   if (!w) { 
