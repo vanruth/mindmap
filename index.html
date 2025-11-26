@@ -334,23 +334,17 @@ function createNode(text, x, y, parentId = null, id = null, w = null, h = null, 
     startTouchDrag(e, nodeEl);
   });
   // *** MODIFIED INPUT LISTENER ***
-  textEl.addEventListener('input', () => {
+    textEl.addEventListener('input', () => {
     updateNodeSize(nodeEl, textEl);
     drawConnections();
   });
-  // *** END MODIFIED INPUT LISTENER ***
-  
   textEl.addEventListener('blur', captureState);
 
-  // *** MODIFIED INITIAL SIZE LOGIC ***
+  // Initial auto-resize if width not provided
   if (!w) { 
     updateNodeSize(nodeEl, textEl);
   }
-  // *** END MODIFIED INITIAL SIZE LOGIC ***
-    drawConnections();
-  });
-  textEl.addEventListener('blur', captureState);
-  if (!w) { const minWidth = 80; nodeEl.style.width = Math.max(minWidth, textEl.scrollWidth + 32) + 'px';}
+
   drawConnections();
   lucide.createIcons();
   if (!skipCapture) captureState();
