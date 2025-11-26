@@ -321,12 +321,13 @@ function createNode(text, x, y, parentId = null, id = null, w = null, h = null, 
   resizeHandle.addEventListener('mousedown', (e) => {e.stopPropagation(); startResize(e, nodeEl);});
   resizeHandle.addEventListener('touchstart', (e) => {e.stopPropagation(); startTouchResize(e, nodeEl);});
   nodeEl.appendChild(resizeHandle);
-if (w && h) {
-  nodeEl.style.width = w + 'px';
-  nodeEl.style.height = h + 'px';
-} else {
-  // New nodes only
+const DEFAULT_WIDTH = 80;
+// Only auto-size if width is not a custom value, e.g. initial "Central Idea" or new nodes
+if (!w || w === DEFAULT_WIDTH) {
   updateNodeSize(nodeEl, textEl);
+} else {
+  nodeEl.style.width = w + 'px';
+  if (h) nodeEl.style.height = h + 'px';
 }
   canvas.appendChild(nodeEl);
   nodes.push({ id, el: nodeEl, parentId });
